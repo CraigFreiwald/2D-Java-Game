@@ -69,6 +69,9 @@ public class Window {
             throw new IllegalStateException("Failed to create the GLFW window");
         }
 
+        //set callbacks
+        glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback);
+
         //Make the OpenGL context current
         glfwMakeContextCurrent(glfwWindow);
         // enable v-sync
