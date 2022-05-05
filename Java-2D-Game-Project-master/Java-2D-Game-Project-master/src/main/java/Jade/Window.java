@@ -3,6 +3,9 @@ package Jade;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
+import util.Time;
+
+import java.util.function.DoubleToIntFunction;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -15,10 +18,15 @@ public class Window {
     private String title;
     private long glfwWindow;
 
-    private float r, g, b, a;
+    public float r, g, b, a;
+    private boolean fadeToBlack = false;
 
     private static Window window = null;
-    private boolean fadeToBlack = false;
+
+    private static Scene currentScene;
+
+
+    private static int CurrentScene = -1;
 
     private Window() {
         this.width = 1920;
@@ -30,6 +38,22 @@ public class Window {
         a = 1;
 
 
+    }
+
+    public static void changeScene(int newScene) {
+        switch (newScene) {
+            case 0:
+                currentScene = new LevelEditorScene();
+                //currentScene.init();
+                break;
+            case 1:
+                currentScene = new LevelScene();
+                break;
+            default:
+                assert false : "Unknown Scene '" + newScene + "'";
+                break;
+
+        }
     }
 
     public static Window get() {
@@ -101,6 +125,10 @@ public class Window {
     }
 
     public void loop() {
+        float beginTime = Time.getTime();
+        float endTime = Time.getTime();
+
+
         while (!glfwWindowShouldClose(glfwWindow)) {
             //Poll events
             glfwPollEvents();
@@ -121,6 +149,10 @@ public class Window {
 
 
             glfwSwapBuffers(glfwWindow);
+
+            endTime = Time.getTime();
+            float dt = endTime - beginTime;
+            beginTime = endTime;
         }
     }
 }
